@@ -10,11 +10,18 @@ namespace StorageProject.Api.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly ItemsService _itemsService;
+        private readonly ItemTypesService _itemTypesService;
+        private readonly ProvidersService _providersService;
 
-        public ItemsController(ItemsService itemsService) => _itemsService = itemsService;
+        public ItemsController(ItemsService itemsService, ItemTypesService itemTypesService, ProvidersService providersService)
+        {
+            _itemsService = itemsService;
+            _itemTypesService = itemTypesService;
+            _providersService = providersService;
+        }
 
 
-        [HttpGet("/get/{id:length(24)}")]
+        [HttpGet("get/{id:length(24)}")]
         public async Task<IActionResult> Get(string id)
         {
             var existingItem = await _itemsService.GetAsync(id);
@@ -25,7 +32,7 @@ namespace StorageProject.Api.Controllers
         }
 
 
-        [HttpGet("/get-all")]
+        [HttpGet("get-all")]
         public async Task<IActionResult> Get()
         {
             var allItems = await _itemsService.GetAsync();
@@ -37,16 +44,38 @@ namespace StorageProject.Api.Controllers
         }
 
 
-        [HttpPost("/new-item")]
-        public async Task<IActionResult> Create(ItemsModel item)
+        [HttpPost("new-item")]
+        public async Task<IActionResult> Create(ItemModel item)
         {
+            var allItems = _itemsService.GetAsync();
+            var itemType = _itemTypesService.GetAsync(item.ItemType.Name);
+            var provider = _providersService.GetAsync(item.Provider.EdrpouCode);
+
+            if (allItems.Result.Any(x => x.SerialNumber == item.SerialNumber) &&
+                allItems.Result.Any(x => x.Name == item.Name))
+            {
+                return BadRequest();
+            }
+
+            if (itemType.Result is null)
+            {
+                await _itemTypesService.CreateAsync(item.ItemType);
+            }
+            if (provider.Result is null)
+            {
+                await _providersService.CreateAsync(item.Provider);
+            }
+            item.ItemType.Id = itemType.Result?.Id;
+            item.Provider.Id = provider.Result?.Id;
+
             await _itemsService.CreateAsync(item);
             return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
+
         }
         
 
-        [HttpPut("/update/{id:length(24)}")]
-        public async Task<IActionResult> Update(string id, ItemsModel item)
+        [HttpPut("update/{id:length(24)}")]
+        public async Task<IActionResult> Update(string id, ItemModel item)
         {
             var existingItem = await _itemsService.GetAsync(id);
 
@@ -61,7 +90,7 @@ namespace StorageProject.Api.Controllers
         }
 
 
-        [HttpDelete("/delete/{id:length(24)}")]
+        [HttpDelete("delete/{id:length(24)}")]
         public async Task<IActionResult> Delete(string id)
         {
             var existingItem = await _itemsService.GetAsync(id);

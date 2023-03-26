@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using StorageProject.Api.Configurations;
 using StorageProject.Api.Services;
 
@@ -8,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("MongoDatabase"));
 
 builder.Services.AddSingleton<ItemsService>();
+builder.Services.AddSingleton<ItemTypesService>();
+builder.Services.AddSingleton<ProvidersService>();
 
 
 builder.Services.AddControllers();
