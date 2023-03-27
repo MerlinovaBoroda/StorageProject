@@ -5,6 +5,7 @@ namespace StorageProject.Api.Models
 {
     public class QrCodeModel
     {
-        public string CoreValue { get; set; } = null!;
+        public string? CoreValue { get; set; }
+        public string? SvgFormat { get; set; }
     }
 }

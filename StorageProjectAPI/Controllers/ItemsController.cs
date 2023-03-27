@@ -47,26 +47,38 @@ namespace StorageProject.Api.Controllers
         [HttpPost("new-item")]
         public async Task<IActionResult> Create(ItemModel item)
         {
-            var allItems = _itemsService.GetAsync();
-            var itemType = _itemTypesService.GetAsync(item.ItemType.Name);
-            var provider = _providersService.GetAsync(item.Provider.EdrpouCode);
+            var allItems = await _itemsService.GetAsync();
+            var itemType = await _itemTypesService.GetAsync(item.ItemType.Name);
+            var provider = await _providersService.GetAsync(item.Provider.EdrpouCode);
 
-            if (allItems.Result.Any(x => x.SerialNumber == item.SerialNumber) &&
-                allItems.Result.Any(x => x.Name == item.Name))
+            if (allItems.Any(x => x.SerialNumber == item.SerialNumber) &&
+                allItems.Any(x => x.Name.ToLower() == item.Name.ToLower()))
             {
                 return BadRequest();
             }
-
-            if (itemType.Result is null)
+            
+            if (itemType is null)
             {
                 await _itemTypesService.CreateAsync(item.ItemType);
+                
             }
-            if (provider.Result is null)
+            if (provider is null)
             {
                 await _providersService.CreateAsync(item.Provider);
             }
-            item.ItemType.Id = itemType.Result?.Id;
-            item.Provider.Id = provider.Result?.Id;
+
+            var qrCodeCoreValue = $"{item.Name}/{item.SerialNumber}";
+            item.QrCode!.CoreValue = qrCodeCoreValue;
+
+            QrCodesController qrController = new();
+            var qr = qrController.GenerateQrCode(item.QrCode!.CoreValue);
+            item.QrCode.SvgFormat = qr!.ToString();
+
+            var existingItemType = await _itemTypesService.GetAsync(item.ItemType.Name);
+            item.ItemType.Id = existingItemType.Id;
+
+            var existingProvider = await _providersService.GetAsync(item.Provider.EdrpouCode);
+            item.Provider.Id = existingProvider.Id;
 
             await _itemsService.CreateAsync(item);
             return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
@@ -77,12 +89,26 @@ namespace StorageProject.Api.Controllers
         [HttpPut("update/{id:length(24)}")]
         public async Task<IActionResult> Update(string id, ItemModel item)
         {
+            var itemType = _itemTypesService.GetAsync(item.ItemType.Name);
+            var provider = _providersService.GetAsync(item.Provider.EdrpouCode);
+
             var existingItem = await _itemsService.GetAsync(id);
 
             if (existingItem is null)
                 return BadRequest();
 
             item.Id = existingItem.Id;
+
+            if (itemType.Result is null)
+            {
+                
+            }
+
+            var existingItemType = await _itemTypesService.GetAsync(item.ItemType.Name);
+            item.ItemType.Id = existingItemType.Id;
+
+            var existingProvider = await _providersService.GetAsync(item.Provider.EdrpouCode);
+            item.Provider.Id = existingProvider.Id;
 
             await _itemsService.UpdateAsync(item);
 
@@ -101,5 +127,7 @@ namespace StorageProject.Api.Controllers
 
             return NoContent();
         }
+
     }
+
 }

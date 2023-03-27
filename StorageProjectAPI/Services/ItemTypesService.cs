@@ -17,8 +17,9 @@ namespace StorageProject.Api.Services
         }
 
         public async Task<List<ItemTypeModel>> GetAsync() => await _itemTypeCollection.Find(_ => true).ToListAsync();
+
         public async Task<ItemTypeModel> GetAsync(string name) => 
-            await _itemTypeCollection.Find(x => x.Name == name).FirstOrDefaultAsync();
+            await _itemTypeCollection.Find(x => x.Name.ToLower() == name.ToLower()).FirstOrDefaultAsync();
         public async Task CreateAsync(ItemTypeModel itemType) => await _itemTypeCollection.InsertOneAsync(itemType);
 
     }

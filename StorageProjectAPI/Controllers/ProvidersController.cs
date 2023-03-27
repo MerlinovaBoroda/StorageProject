@@ -6,11 +6,11 @@ namespace StorageProject.Api.Controllers
 {
     [Route("api/providers/")]
     [ApiController]
-    public class ProviderController : ControllerBase
+    public class ProvidersController : ControllerBase
     {
         private readonly ProvidersService _providersService;
 
-        public ProviderController(ProvidersService providersService)
+        public ProvidersController(ProvidersService providersService)
         {
             _providersService = providersService;
         }
@@ -30,7 +30,7 @@ namespace StorageProject.Api.Controllers
         public async Task<IActionResult> Get(int code)
         {
             var existingPvider = await _providersService.GetAsync(code);
-            if (existingPvider is null) { return BadRequest(); }
+            if (existingPvider is null) { return BadRequest("Provider not found"); }
 
             return Ok(existingPvider);
         }
@@ -39,7 +39,7 @@ namespace StorageProject.Api.Controllers
         public async Task<IActionResult> Get(string name)
         {
             var existingPvider = await _providersService.GetAsync(name);
-            if (existingPvider is null) { return BadRequest(); }
+            if (existingPvider is null) { return BadRequest("Provider not found"); }
 
             return Ok(existingPvider);
         }
