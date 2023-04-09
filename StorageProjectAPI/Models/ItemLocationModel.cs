@@ -5,9 +5,8 @@ namespace StorageProject.Api.Models
 {
     public class ItemLocationModel
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        public string? LocationName { get; set; }
+        public string? LocationFloor { get; set; }
         public string? Coordinates { get; set; }
     }
 }

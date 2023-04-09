@@ -26,6 +26,15 @@ namespace StorageProject.Api.Controllers
             return NotFound();
         }
 
+        [HttpGet("get/{id:length(24)}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var existingPvider = await _providersService.GetAsyncById(id);
+            if (existingPvider is null) { return BadRequest("Provider not found"); }
+
+            return Ok(existingPvider);
+        }
+
         [HttpGet("get/{code:length(8)}")]
         public async Task<IActionResult> Get(int code)
         {
@@ -44,7 +53,7 @@ namespace StorageProject.Api.Controllers
             return Ok(existingPvider);
         }
 
-        [HttpPost("new-provider")]
+        [HttpPost("create")]
         public async Task<IActionResult> Create(ProviderModel provider)
         {
             var existingProvider = await _providersService.GetAsync(provider.EdrpouCode);
@@ -54,6 +63,18 @@ namespace StorageProject.Api.Controllers
             }
             await _providersService.CreateAsync(provider);
             return CreatedAtAction(nameof(Get), new { code = provider.EdrpouCode }, provider);
+        }
+
+        [HttpDelete("delete/{id:length(24)}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var existingItem = await _providersService.GetAsyncById(id);
+
+            if (existingItem is null) { return BadRequest(); }
+
+            await _providersService.RemoveAsync(id);
+
+            return NoContent();
         }
     }
 }

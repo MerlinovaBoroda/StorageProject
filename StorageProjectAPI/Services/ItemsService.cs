@@ -28,8 +28,5 @@ namespace StorageProject.Api.Services
 
         public async Task RemoveAsync(string id) => await _itemCollection.DeleteOneAsync(x => x.Id == id);
 
-
-        public async Task<ItemModel> GetSerialAsync(string serialNumber) =>
-            await _itemCollection.Find(x => x.SerialNumber == serialNumber).FirstOrDefaultAsync();
     }
 }

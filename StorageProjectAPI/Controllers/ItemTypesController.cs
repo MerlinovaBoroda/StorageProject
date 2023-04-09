@@ -26,6 +26,15 @@ namespace StorageProject.Api.Controllers
             return NotFound();
         }
 
+        [HttpGet("get/{id:length(24)}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var existingPvider = await _itemTypeService.GetAsyncById(id);
+            if (existingPvider is null) { return BadRequest("Item Type not found"); }
+
+            return Ok(existingPvider);
+        }
+
         [HttpGet("get/{name}")]
         public async Task<IActionResult> Get(string name)
         {
@@ -35,7 +44,7 @@ namespace StorageProject.Api.Controllers
             return Ok(existingType);
         }
 
-        [HttpPost("new-item-type")]
+        [HttpPost("create")]
         public async Task<IActionResult> Create(ItemTypeModel itemType)
         {
             var existingProvider = await _itemTypeService.GetAsync(itemType.Name);
@@ -45,6 +54,18 @@ namespace StorageProject.Api.Controllers
             }
             await _itemTypeService.CreateAsync(itemType);
             return CreatedAtAction(nameof(Get), new { code = itemType.Name }, itemType);
+        }
+
+        [HttpDelete("delete/{id:length(24)}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var existingItem = await _itemTypeService.GetAsyncById(id);
+
+            if (existingItem is null) { return BadRequest(); }
+
+            await _itemTypeService.RemoveAsync(id);
+
+            return NoContent();
         }
     }
 }

@@ -8,17 +8,27 @@ namespace StorageProject.Api.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        public string Name { get; set; } = null!;
-        public ItemTypeModel ItemType { get; set; } = null!;
-        public string Manufacturer { get; set; } = null!;
-        public string Model { get; set; } = null!;
-        public string SerialNumber { get; set; } = null!;
+        public string Name { get; set; }
+        public string ItemTypeId { get; set; } = null!;
+
+        [BsonIgnore]
+        public ItemTypeModel? ItemType { get; set; }
+
+        public string Manufacturer { get; set; }
+        public string Model { get; set; }
+        public string SerialNumber { get; set; }
         public string? Description { get; set; }
         public string? Logo { get; set; }
         public DateTime Warranty { get; set; }
-        public ProviderModel Provider { get; set; } = null!;
+        public string ProviderId { get; set; } = null!;
+
+        [BsonIgnore]
+        public ProviderModel? Provider { get; set; }
+        
         public QrCodeModel? QrCode { get; set; }
+        
         public ItemLocationModel? Location { get; set; }
+        
 
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
     }
