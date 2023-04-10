@@ -93,7 +93,7 @@ namespace StorageProject.Api.Controllers
 
             await _itemsService.UpdateAsync(item);
             
-            return NoContent();
+            return Ok(item);
         }
 
 

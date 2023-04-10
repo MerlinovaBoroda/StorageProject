@@ -15,7 +15,7 @@ namespace StorageProject.Api.Controllers
             _providersService = providersService;
         }
 
-        [HttpGet("get-all")]
+        [HttpGet("get/all")]
         public async Task<IActionResult> Get()
         {
             var allItems = await _providersService.GetAsync();
