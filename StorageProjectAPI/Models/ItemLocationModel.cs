@@ -7,6 +7,7 @@ namespace StorageProject.Api.Models
     {
         public string? LocationName { get; set; }
         public string? LocationFloor { get; set; }
-        public string? Coordinates { get; set; }
+        public int? CoordinateX { get; set; }
+        public int? CoordinateY { get; set; }
     }
 }
