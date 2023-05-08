@@ -8,18 +8,25 @@ namespace StorageProject.Api.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+        [BsonRequired]
         public string Name { get; set; }
+        [BsonRequired]
         public string ItemTypeId { get; set; } = null!;
 
         [BsonIgnore]
         public ItemTypeModel? ItemType { get; set; }
 
+        [BsonRequired]
         public string Manufacturer { get; set; }
+        [BsonRequired]
         public string Model { get; set; }
+        [BsonRequired]
         public string SerialNumber { get; set; }
         public string? Description { get; set; }
         public string? Logo { get; set; }
         public DateTime Warranty { get; set; }
+
+        [BsonRequired]
         public string ProviderId { get; set; } = null!;
 
         [BsonIgnore]

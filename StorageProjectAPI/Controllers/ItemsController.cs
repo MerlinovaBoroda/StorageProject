@@ -19,6 +19,17 @@ namespace StorageProject.Api.Controllers
             _providersService = providersService;
         }
 
+        private async Task<ItemModel> getHelper(ItemModel item)
+        {
+            var existingItemType = await _itemTypesService.GetAsyncById(item.ItemTypeId);
+            var existingProvider = await _providersService.GetAsyncById(item.ProviderId);
+
+            if (existingItemType is not null) { item.ItemType = existingItemType; }
+            if (existingProvider is not null) { item.Provider = existingProvider; }
+
+            return item;
+        }
+
 
         [HttpGet("get/{id:length(24)}")]
         public async Task<IActionResult> Get(string id)
@@ -26,14 +37,11 @@ namespace StorageProject.Api.Controllers
             var existingItem = await _itemsService.GetAsync(id);
             if (existingItem is null) { return BadRequest(); }
 
-            var existingItemType = await _itemTypesService.GetAsyncById(existingItem.ItemTypeId);
-            var existingProvider = await _providersService.GetAsyncById(existingItem.ProviderId);
+            var result = await getHelper(existingItem);
 
-            if (existingItemType is not null) { existingItem.ItemType = existingItemType; }
-            if (existingProvider is not null) { existingItem.Provider = existingProvider; }
-
-            return Ok(existingItem);
+            return Ok(result);
         }
+
 
 
         [HttpGet("get/all")]
@@ -76,7 +84,9 @@ namespace StorageProject.Api.Controllers
             
             await _itemsService.CreateAsync(item);
 
-            return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
+
+
+            return Ok(await getHelper(item));
 
         }
         
