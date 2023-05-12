@@ -17,12 +17,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
+builder.Services.AddCors(p => p.AddPolicy("CorsPolicy", build =>
 {
+    build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    /*
     build.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
     build.WithOrigins("http://localhost:3001").AllowAnyMethod().AllowAnyHeader();
     build.WithOrigins("http://192.168.7.23:3000").AllowAnyMethod().AllowAnyHeader();
-    build.WithOrigins("http://storage-app-sxlb.onrender.com").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://storage-app-sxlb.onrender.com:").AllowAnyMethod().AllowAnyHeader();
+    */
 }));
 
 
@@ -34,10 +37,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
-
-app.UseCors("corspolicy");
 
 app.UseAuthorization();
 
