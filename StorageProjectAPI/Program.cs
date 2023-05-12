@@ -28,10 +28,10 @@ if (!builder.Environment.IsDevelopment())
 
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {
-    build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-    //build.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
-    //build.WithOrigins("http://localhost:3001").AllowAnyMethod().AllowAnyHeader();
-    //build.WithOrigins("http://192.168.7.23:3000").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://localhost:3001").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://192.168.7.23:3000").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("https://storage-app-sxlb.onrender.com").AllowAnyMethod().AllowAnyHeader();
 }));
 
 
