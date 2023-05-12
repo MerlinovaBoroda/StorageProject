@@ -17,21 +17,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-if (!builder.Environment.IsDevelopment())
-{
-    builder.Services.AddHttpsRedirection(options =>
-    {
-        options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
-        options.HttpsPort = 443;
-    });
-}
-
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {
     build.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
     build.WithOrigins("http://localhost:3001").AllowAnyMethod().AllowAnyHeader();
     build.WithOrigins("http://192.168.7.23:3000").AllowAnyMethod().AllowAnyHeader();
-    build.WithOrigins("https://storage-app-sxlb.onrender.com").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://storage-app-sxlb.onrender.com").AllowAnyMethod().AllowAnyHeader();
 }));
 
 
