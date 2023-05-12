@@ -7,7 +7,6 @@ namespace StorageProject.Api.Controllers
 {
     [Route("api/items/")]
     [ApiController]
-    [EnableCors("corspolicy")]
     public class ItemsController : ControllerBase
     {
         private readonly ItemsService _itemsService;
