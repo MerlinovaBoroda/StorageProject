@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using StorageProject.Api.Models;
 using StorageProject.Api.Services;
 
@@ -6,6 +7,7 @@ namespace StorageProject.Api.Controllers
 {
     [Route("api/providers/")]
     [ApiController]
+    [EnableCors("corspolicy")]
     public class ProvidersController : ControllerBase
     {
         private readonly ProvidersService _providersService;
